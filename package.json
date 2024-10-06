@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@langchain/community": "^0.3.4",
     "advanced-calculator": "^1.1.1",
     "dotenv": "^16.3.1",
     "langchain": "^0.0.203",

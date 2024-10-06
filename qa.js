@@ -2,9 +2,11 @@ import { openai } from './openai.js'
 import { Document } from 'langchain/document'
 import { MemoryVectorStore } from 'langchain/vectorstores/memory'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
-import { YoutubeLoader } from 'langchain/document_loaders/web/youtube'
+// import { YoutubeLoader } from 'langchain/document_loaders/web/youtube'
 import { CharacterTextSplitter } from 'langchain/text_splitter'
-import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
+// import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
+import { PDFLoader } from '@langchain/core/document_loaders/fs/pdf'
+import { YoutubeLoader } from '@langchain/core/document_loaders/web/youtube'
 
 const question = process.argv[2] || 'hi'
 
@@ -14,28 +16,41 @@ export const createStore = (docs) =>
   MemoryVectorStore.fromDocuments(docs, new OpenAIEmbeddings())
 
 const docsFromYTVideo = async (video) => {
+  // const loader = YoutubeLoader.createFromUrl(video, {
+  //   language: 'en',
+  //   addVideoInfo: true,
+  // })
+  // return loader.loadAndSplit(
+  //   new CharacterTextSplitter({
+  //     separator: ' ',
+  //     chunkSize: 2500,
+  //     chunkOverlap: 100,
+  //   })
+  // )
   const loader = YoutubeLoader.createFromUrl(video, {
     language: 'en',
     addVideoInfo: true,
   })
-  return loader.loadAndSplit(
+  return loader.load(
     new CharacterTextSplitter({
       separator: ' ',
       chunkSize: 2500,
-      chunkOverlap: 100,
+      chunkOverlap: 200,
     })
   )
 }
 
 const docsFromPDF = () => {
-  const loader = new PDFLoader('xbox.pdf')
-  return loader.loadAndSplit(
-    new CharacterTextSplitter({
-      separator: '. ',
-      chunkSize: 2500,
-      chunkOverlap: 200,
-    })
-  )
+  // const loader = new PDFLoader('xbox.pdf')
+  // return loader.loadAndSplit(
+  //   new CharacterTextSplitter({
+  //     separator: '. ',
+  //     chunkSize: 2500,
+  //     chunkOverlap: 200,
+  //   })
+  // )
+  const docsFromPDF = async () => { const loader = new PDFLoader('./xbox.pdf')
+return loader.load( new CharacterTextSplitter({ separator: ' ', chunkSize: 2500, chunkOverlap: 200, }) ) }
 }
 
 const loadStore = async () => {
